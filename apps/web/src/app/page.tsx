@@ -8,7 +8,7 @@ import { UploadModal } from '@/components/upload/UploadModal';
 
 export default function Home() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
-  const [hasPDF, setHasPDF] = useState(true);
+  const [hasPDF, setHasPDF] = useState(false);
 
   // This will be implemented later when we handle file uploads
   const handleFileUpload = () => {
@@ -20,7 +20,10 @@ export default function Home() {
     return (
       <UploadModal
         isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
+        onClose={() => {
+          setIsUploadModalOpen(false);
+          setHasPDF(true); // TODO: Remove close button functionality once PDF upload is implemented
+        }}
       />
     );
   }
