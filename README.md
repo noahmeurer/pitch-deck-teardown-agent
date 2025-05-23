@@ -13,6 +13,9 @@ A platform for analyzing and providing feedback on pitch decks using AI.
 
 1. **Install dependencies**:
    ```bash
+   # Install pnpm
+   npm install -g pnpm
+   
    # Install Supabase CLI
    brew install supabase/tap/supabase
    
