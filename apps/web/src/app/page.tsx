@@ -10,10 +10,20 @@ export default function Home() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
   const [hasPDF, setHasPDF] = useState(false);
 
-  // This will be implemented later when we handle file uploads
-  const handleFileUpload = () => {
-    setIsUploadModalOpen(false);
-    setHasPDF(true);
+  // TODO: This will be implemented later when we handle file uploads
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData();
+
+    formData.append('file', file);
+      
+    try {
+      const response = await fetch
+
+    } catch (err) {
+
+    } finally {
+      setHasPDF(true);
+    }
   };
 
   if (!hasPDF) {
@@ -22,8 +32,8 @@ export default function Home() {
         isOpen={isUploadModalOpen}
         onClose={() => {
           setIsUploadModalOpen(false);
-          setHasPDF(true); // TODO: Remove close button functionality once PDF upload is implemented
         }}
+        onFileUpload={handleFileUpload}
       />
     );
   }
