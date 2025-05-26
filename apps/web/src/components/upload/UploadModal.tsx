@@ -4,13 +4,25 @@ interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onFileUpload?: (file: File) => void | Promise<void>;
+  isUploading?: boolean;
+  error?: string | null;
 }
 
-export function UploadModal({ isOpen, onClose, onFileUpload }: UploadModalProps) {
+export function UploadModal({ 
+  isOpen, 
+  onClose, 
+  onFileUpload,
+  isUploading: externalIsUploading,
+  error: externalError 
+}: UploadModalProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [isUploading, setIsUploading] = useState(false);
+  const [internalError, setInternalError] = useState<string>('');
+  const [internalIsUploading, setInternalIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Use external states if provided, otherwise use internal states
+  const isUploading = externalIsUploading ?? internalIsUploading;
+  const error = externalError ?? internalError;
 
   if (!isOpen) return null;
 
@@ -30,16 +42,17 @@ export function UploadModal({ isOpen, onClose, onFileUpload }: UploadModalProps)
   };
 
   const handleFile = async (file: File) => {
-    setError('');
+    setInternalError('');
     
     const validationError = validateFile(file);
     if (validationError) {
-      setError(validationError);
+      setInternalError(validationError);
       return;
     }
 
-    setIsUploading(true);
+    setInternalIsUploading(true);
     try {
+      console.log('Uploading file:', file.name);
       // Call the onFileUpload callback if provided
       if (onFileUpload) {
         await onFileUpload(file);
@@ -47,9 +60,9 @@ export function UploadModal({ isOpen, onClose, onFileUpload }: UploadModalProps)
       // Close modal on successful upload
       onClose();
     } catch (err) {
-      setError('Failed to upload file. Please try again.');
+      setInternalError('Failed to upload file. Please try again.');
     } finally {
-      setIsUploading(false);
+      setInternalIsUploading(false);
     }
   };
 
@@ -73,7 +86,7 @@ export function UploadModal({ isOpen, onClose, onFileUpload }: UploadModalProps)
     if (files.length === 0) return;
     
     if (files.length > 1) {
-      setError('Please select only one file');
+      setInternalError('Please select only one file');
       return;
     }
     
