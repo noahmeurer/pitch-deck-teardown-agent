@@ -1,15 +1,14 @@
 import React from 'react';
+import { PitchDeck } from '@/components/document/Document';
 
 export function LeftColumn() {
   return (
     <>
       {/* PDF Viewer */}
-      <div className="h-[calc(100vh-16rem)] rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="h-full rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 p-4">
+      <div className="h-[calc(95vh-16rem)] rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex h-full items-center justify-center">
-            <p className="text-gray-500">PDF Viewer will be implemented here</p>
+            <PitchDeck />
           </div>
-        </div>
       </div>
 
       {/* Chat Interface */}
