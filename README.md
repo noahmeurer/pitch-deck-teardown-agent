@@ -34,14 +34,14 @@ A platform for analyzing and providing feedback on pitch decks using AI.
    
    This script will:
    - Start the local Supabase instance
-   - Create a `.env.local` file with Supabase credentials
+   - Create a `.env.local` file with required environment variables
    - Create the required "pitch-decks" storage bucket
-   - Create a `secrets/.env` file for your API keys
 
 3. **Configure API Keys**:
    After running the setup script, you need to add your Gemini API key:
-   - Open `secrets/.env`
-   - Add your Gemini API key to the `GEMINI_API_KEY=` line
+   - Open `.env.local` in the root directory
+   - Find the line starting with `GEMINI_API_KEY=`
+   - Add your Gemini API key after the equals sign
    - Save the file
 
 4. **Verify setup**:

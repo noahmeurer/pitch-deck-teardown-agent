@@ -26,6 +26,7 @@ echo "NEXT_PUBLIC_FRONTEND_PORT=3000" >> .env.local
 echo "NEXT_PUBLIC_STORAGE_SERVICE_PORT=3001" >> .env.local
 echo "NEXT_PUBLIC_RAG_SERVICE_PORT=3002" >> .env.local
 echo "NEXT_PUBLIC_SUMMARY_SERVICE_PORT=3003" >> .env.local
+echo "GEMINI_API_KEY=" >> .env.local
 
 # Write the same environment variables to apps/web/.env.local
 echo "NEXT_PUBLIC_SUPABASE_URL=$supabase_url" >> apps/web/.env.local
@@ -38,7 +39,3 @@ echo "NEXT_PUBLIC_SUMMARY_SERVICE_PORT=3003" >> apps/web/.env.local
 # Run setup.ts
 cd scripts
 pnpm dlx tsx setup.ts
-
-# Create a secrets/.env file
-touch secrets/.env
-echo "GEMINI_API_KEY=" >> secrets/.env
