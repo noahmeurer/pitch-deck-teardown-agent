@@ -6,20 +6,24 @@ import { LeftColumn } from '@/components/left-column/LeftColumn';
 import { RightColumn } from '@/components/right-column/RightColumn';
 import { UploadModal } from '@/components/upload/UploadModal';
 import { config } from '@/config/env';
+import { useDocumentContext } from '@/context/DocumentContext';
 
 export default function Home() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
   const [hasPDF, setHasPDF] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const { setDocumentUrl } = useDocumentContext();
 
   const handleFileUpload = async (file: File) => {
     setIsUploading(true);
     setUploadError(null);
+
     const formData = new FormData();
     formData.append('file', file);
       
     try {
+      console.log('performing upload request');
       const response = await fetch(`${config.backendUrl}/upload`, {
         method: 'POST',
         body: formData
@@ -36,6 +40,8 @@ export default function Home() {
       if (data.success) {
         setHasPDF(true);
         setIsUploadModalOpen(false);
+        console.log(data.data.fullPath);
+        setDocumentUrl(`${config.supabaseUrl}/storage/v1/object/public/${data.data.fullPath}`);
       } else {
         throw new Error(data.error || 'Upload failed');
       }
