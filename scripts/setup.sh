@@ -23,13 +23,17 @@ echo "SUPABASE_SERVICE_ROLE_KEY=$supabase_service_role_key" >> .env.local
 
 # Add port configurations to root .env.local
 echo "NEXT_PUBLIC_FRONTEND_PORT=3000" >> .env.local
-echo "NEXT_PUBLIC_BACKEND_PORT=3001" >> .env.local
+echo "NEXT_PUBLIC_STORAGE_SERVICE_PORT=3001" >> .env.local
+echo "NEXT_PUBLIC_RAG_SERVICE_PORT=3002" >> .env.local
+echo "NEXT_PUBLIC_SUMMARY_SERVICE_PORT=3003" >> .env.local
 
 # Write the same environment variables to apps/web/.env.local
 echo "NEXT_PUBLIC_SUPABASE_URL=$supabase_url" >> apps/web/.env.local
 echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$supabase_anon_key" >> apps/web/.env.local
 echo "NEXT_PUBLIC_FRONTEND_PORT=3000" >> apps/web/.env.local
-echo "NEXT_PUBLIC_BACKEND_PORT=3001" >> apps/web/.env.local
+echo "NEXT_PUBLIC_STORAGE_SERVICE_PORT=3001" >> apps/web/.env.local
+echo "NEXT_PUBLIC_RAG_SERVICE_PORT=3002" >> apps/web/.env.local
+echo "NEXT_PUBLIC_SUMMARY_SERVICE_PORT=3003" >> apps/web/.env.local
 
 # Run setup.ts
 cd scripts

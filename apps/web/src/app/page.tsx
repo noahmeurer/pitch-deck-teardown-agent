@@ -24,7 +24,7 @@ export default function Home() {
       
     try {
       console.log('performing upload request');
-      const response = await fetch(`${config.backendUrl}/upload`, {
+      const response = await fetch(`${config.storageServiceUrl}/upload`, {
         method: 'POST',
         body: formData
       });
