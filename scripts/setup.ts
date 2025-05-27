@@ -22,7 +22,7 @@ async function createBucket() {
     console.log('Creating pitch-decks bucket...');
     
     const { data, error } = await supabase.storage.createBucket('pitch-decks', {
-        public: false,
+        public: true,
         allowedMimeTypes: ['application/pdf'],
         fileSizeLimit: 15 * 1024 * 1024, // 15MB
     });
