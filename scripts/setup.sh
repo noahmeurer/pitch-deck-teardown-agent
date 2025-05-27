@@ -38,3 +38,7 @@ echo "NEXT_PUBLIC_SUMMARY_SERVICE_PORT=3003" >> apps/web/.env.local
 # Run setup.ts
 cd scripts
 pnpm dlx tsx setup.ts
+
+# Create a secrets/.env file
+touch secrets/.env
+echo "GEMINI_API_KEY=" >> secrets/.env

@@ -2,3 +2,4 @@ node_modules
 .supabase
 .env*
 .DS_Store
+secrets/
