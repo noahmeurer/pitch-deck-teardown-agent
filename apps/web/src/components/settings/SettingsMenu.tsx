@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useThesis, type Thesis } from '../../contexts/ThesisContext';
 
 interface SettingsMenuProps {
   isOpen: boolean;
@@ -6,27 +7,8 @@ interface SettingsMenuProps {
   anchorRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-interface Thesis {
-  stage: string;
-  check: string;
-  verticals: string[];
-  criteria: string[];
-}
-
-const defaultThesis: Thesis = {
-  stage: 'Seed',
-  check: '$500k-$2M',
-  verticals: ['Data Infrastructure', 'AI/ML Tools', 'Data Analytics', 'DataOps'],
-  criteria: [
-    'Product-led growth potential',
-    'Strong technical founding team',
-    'Clear data moat strategy',
-    'Initial product in market'
-  ]
-};
-
 export function SettingsMenu({ isOpen, onClose, anchorRef }: SettingsMenuProps) {
-  const [thesis, setThesis] = useState<Thesis>(defaultThesis);
+  const { thesis, setThesis } = useThesis();
   const [isEditing, setIsEditing] = useState(false);
   const [editedThesis, setEditedThesis] = useState<Thesis>(thesis);
   const [newVertical, setNewVertical] = useState('');
@@ -85,6 +67,9 @@ export function SettingsMenu({ isOpen, onClose, anchorRef }: SettingsMenuProps) 
   const topPosition = (anchorRect?.bottom ?? 0) + 8;
   const rightPosition = window.innerWidth - (anchorRect?.right ?? 0);
 
+  // Ensure the menu stays within the viewport
+  const maxHeight = window.innerHeight - topPosition - 20; // 20px padding from bottom
+
   return (
     <>
       {/* Backdrop for closing */}
@@ -99,10 +84,12 @@ export function SettingsMenu({ isOpen, onClose, anchorRef }: SettingsMenuProps) 
         style={{
           top: `${topPosition}px`,
           right: `${rightPosition}px`,
+          maxHeight: `${maxHeight}px`,
+          overflowY: 'auto',
         }}
       >
         <div className="p-4">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-white pb-2">
             <h3 className="text-lg font-semibold">Investment Thesis</h3>
             {!isEditing && (
               <button

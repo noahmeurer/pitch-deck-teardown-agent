@@ -6,14 +6,14 @@ import { LeftColumn } from '@/components/left-column/LeftColumn';
 import { RightColumn } from '@/components/right-column/RightColumn';
 import { UploadModal } from '@/components/upload/UploadModal';
 import { config } from '@/config/env';
-import { useDocumentContext } from '@/context/DocumentContext';
+import { useDocumentContext } from '@/contexts/DocumentContext';
 
 export default function Home() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
   const [hasPDF, setHasPDF] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const { setDocumentUrl } = useDocumentContext();
+  const { setDocumentStorage } = useDocumentContext();
 
   const handleFileUpload = async (file: File) => {
     setIsUploading(true);
@@ -40,8 +40,11 @@ export default function Home() {
       if (data.success) {
         setHasPDF(true);
         setIsUploadModalOpen(false);
-        console.log(data.data.fullPath);
-        setDocumentUrl(`${config.supabaseUrl}/storage/v1/object/public/${data.data.fullPath}`);
+        setDocumentStorage({
+          bucketName: 'pitch-decks',
+          bucketPath: data.data.path,
+          documentUrl: `${config.supabaseUrl}/storage/v1/object/public/${data.data.fullPath}`
+        });
       } else {
         throw new Error(data.error || 'Upload failed');
       }

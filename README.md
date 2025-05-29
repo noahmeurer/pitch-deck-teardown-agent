@@ -56,6 +56,30 @@ After running the setup script, your local development environment is ready. The
 - Storage bucket for pitch deck PDFs
 - Authentication and API endpoints
 
+The application consists of multiple services that need to be started in a specific order:
+
+1. **Start the Summary Service**:
+   ```bash
+   cd apps/api/summary-service
+   pnpm dev
+   ```
+
+2. **Start the Storage Service** (in a new terminal):
+   ```bash
+   cd apps/api/storage-service
+   pnpm dev
+   ```
+
+3. **Start the Web Client** (in a new terminal):
+   ```bash
+   cd apps/web
+   pnpm dev
+   ```
+
+The web application will be available at http://localhost:3000
+
+### Managing Supabase
+
 To stop the Supabase instance:
 ```bash
 supabase stop

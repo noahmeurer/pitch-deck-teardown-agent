@@ -13,7 +13,7 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export default {
-    port: process.env.NEXT_PUBLIC_BACKEND_PORT || 3001,
+    port: process.env.NEXT_PUBLIC_STORAGE_SERVICE_PORT || 3001,
     supabaseUrl,
     supabaseKey,
 }
