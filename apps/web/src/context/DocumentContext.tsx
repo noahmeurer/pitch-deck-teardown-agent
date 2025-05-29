@@ -4,14 +4,24 @@ interface DocumentProviderProps {
     children: ReactNode;
 }
 
-interface DocumentContextType {
+interface DocumentStorageData {
+    bucketName: 'pitch-decks';
+    bucketPath: string | null;
     documentUrl: string | null;
-    setDocumentUrl: Dispatch<SetStateAction<string | null>>;
+}
+
+interface DocumentContextType {
+    documentStorage: DocumentStorageData;
+    setDocumentStorage: Dispatch<SetStateAction<DocumentStorageData>>;
 }
 
 const DocumentContext = createContext<DocumentContextType>({
-    documentUrl: null,
-    setDocumentUrl: () => {},
+    documentStorage: {
+        bucketName: 'pitch-decks',
+        bucketPath: null,
+        documentUrl: null
+    },
+    setDocumentStorage: () => {},
 });
 
 export const useDocumentContext = () => useContext(DocumentContext);
@@ -19,10 +29,14 @@ export const useDocumentContext = () => useContext(DocumentContext);
 export default function DocumentProvider({ 
     children 
 }: DocumentProviderProps) {
-    const [documentUrl, setDocumentUrl] = useState<string | null>(null);
+    const [documentStorage, setDocumentStorage] = useState<DocumentStorageData>({
+        bucketName: 'pitch-decks',
+        bucketPath: null,
+        documentUrl: null
+    });
 
     return (
-        <DocumentContext.Provider value={{ documentUrl, setDocumentUrl }}>
+        <DocumentContext.Provider value={{ documentStorage, setDocumentStorage }}>
             {children}
         </DocumentContext.Provider>
     )
