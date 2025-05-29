@@ -6,7 +6,7 @@ import { LeftColumn } from '@/components/left-column/LeftColumn';
 import { RightColumn } from '@/components/right-column/RightColumn';
 import { UploadModal } from '@/components/upload/UploadModal';
 import { config } from '@/config/env';
-import { useDocumentContext } from '@/context/DocumentContext';
+import { useDocumentContext } from '@/contexts/DocumentContext';
 
 export default function Home() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);

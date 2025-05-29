@@ -1,4 +1,4 @@
-import { useDocumentContext } from '@/context/DocumentContext';
+import { useDocumentContext } from '@/contexts/DocumentContext';
 
 
 export const PitchDeck = () => {

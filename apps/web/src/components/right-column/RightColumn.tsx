@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDocumentContext } from '@/context/DocumentContext';
+import { useDocumentContext } from '@/contexts/DocumentContext';
 import { config } from '@/config/env';
 
 export function RightColumn() {
