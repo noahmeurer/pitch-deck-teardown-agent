@@ -51,8 +51,7 @@ export function RightColumn() {
         
         if (data.success) {
           setMultiHeadingSummary(data.data);
-          // Auto-expand when summary is loaded
-          setIsExecSummaryExpanded(true);
+          console.log('Multi-heading summary sucessfully generated:', data.data);
         } else {
           throw new Error(data.error || 'Multi-heading summary generation failed');
         }
@@ -74,9 +73,48 @@ export function RightColumn() {
         return;
       }
 
+      if (executiveSummary || isLoadingExecSummary) {
+        return;
+      }
+
       setIsLoadingExecSummary(true);
       setExecSummaryError(null);
+
+      try {
+        const response = await fetch(`${config.summaryServiceUrl}/summary`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            multiHeadingSummary: multiHeadingSummary
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Executive summary generation failed with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setExecutiveSummary(data.data);
+          // Auto-expand when summary is loaded
+          setIsExecSummaryExpanded(true);
+        } else {
+          throw new Error(data.error || 'Executive summary generation failed');
+        }
+
+      } catch (error) {
+        setExecSummaryError(error instanceof Error ? error.message : 'Failed to generate executive summary');
+        console.error('Executive summary generation error:', error);
+      } finally {
+        setIsLoadingExecSummary(false);
       }
+    };
+
+    generateExecSummary();
   }, [multiHeadingSummary, isParsingDocument]);
 
   const toggleMetric = (metricId: number) => {
