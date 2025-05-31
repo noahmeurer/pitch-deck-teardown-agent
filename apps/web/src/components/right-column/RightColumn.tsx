@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDocumentContext } from '@/contexts/DocumentContext';
 import { config } from '@/config/env';
-import { ProcessingModal } from './ProcessingModal';
+import { ProcessingModal, ProcessingErrorModal } from './ProcessingModal';
 
 export function RightColumn() {
   const [isExecSummaryExpanded, setIsExecSummaryExpanded] = useState(false);
@@ -10,8 +10,8 @@ export function RightColumn() {
   const [isParsingDocument, setIsParsingDocument] = useState(false);
   const [multiHeadingSummaryError, setMultiHeadingSummaryError] = useState<string | null>(null);
   const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
-  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
-  const [summaryError, setSummaryError] = useState<string | null>(null);
+  const [isLoadingExecSummary, setIsLoadingExecSummary] = useState(false);
+  const [execSummaryError, setExecSummaryError] = useState<string | null>(null);
   
   const { documentStorage } = useDocumentContext();
 
@@ -68,6 +68,17 @@ export function RightColumn() {
     generateExecutiveSummary();
   }, [documentStorage.documentUrl, documentStorage.bucketPath, documentStorage.bucketName, multiHeadingSummary, isParsingDocument]);
 
+  useEffect(() => {
+    const generateExecSummary = async () => {
+      if (!multiHeadingSummary || isParsingDocument) {
+        return;
+      }
+
+      setIsLoadingExecSummary(true);
+      setExecSummaryError(null);
+      }
+  }, [multiHeadingSummary, isParsingDocument]);
+
   const toggleMetric = (metricId: number) => {
     setExpandedMetrics(prev => 
       prev.includes(metricId) 
@@ -77,7 +88,7 @@ export function RightColumn() {
   };
 
   const renderExecutiveSummaryContent = () => {
-    if (isLoadingSummary) {
+    if (isLoadingExecSummary) {
       return (
         <div className="border-t border-gray-200 p-4">
           <div className="flex items-center space-x-2">
@@ -88,15 +99,15 @@ export function RightColumn() {
       );
     }
 
-    if (summaryError) {
+    if (execSummaryError) {
       return (
         <div className="border-t border-gray-200 p-4">
           <div className="text-red-600">
             <p className="font-medium">Error generating summary:</p>
-            <p className="text-sm mt-1">{summaryError}</p>
+            <p className="text-sm mt-1">{execSummaryError}</p>
             <button
               onClick={() => {
-                setSummaryError(null);
+                setExecSummaryError(null);
                 setExecutiveSummary(null);
                 // This will trigger the useEffect to retry
               }}
@@ -129,6 +140,7 @@ export function RightColumn() {
   return (
     <div className="relative min-h-screen">
       <ProcessingModal isVisible={isParsingDocument} />
+      <ProcessingErrorModal isError={multiHeadingSummaryError} />
       <div className="space-y-6">
         {/* Executive Summary */}
         <div className="rounded-lg border border-gray-200 bg-white">
@@ -138,7 +150,7 @@ export function RightColumn() {
           >
             <div className="flex items-center space-x-2">
               <h2 className="text-xl font-semibold">Executive Summary</h2>
-              {isLoadingSummary && (
+              {isLoadingExecSummary && (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
               )}
             </div>
