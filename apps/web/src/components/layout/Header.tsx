@@ -6,7 +6,7 @@ export function Header() {
   const settingsButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm">
+    <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm z-50">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold text-gray-900">Pitch Deck Teardown</h1>
       </div>
