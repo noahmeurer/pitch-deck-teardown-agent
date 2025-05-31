@@ -83,7 +83,8 @@ You are a senior VC analyst. You will be provided a PDF that should represent a 
 - Otherwise, for each heading, extract, summarize, and report exactly what details exist.  
 - If a heading is only partially covered, summarize the available information and explicitly note any missing specifics. If a heading is completely missing, state: "The deck does not provide information on [heading]." 
 - Do **not** invent or hallucinate details to fill a heading.  
-- Be as detailed and specific as possible, including any numbers or milestones from the deck (e.g., "$100k MRR"), but only if they appear.  
+- Be as detailed and specific as possible, including any numbers or milestones from the deck (e.g., "$100k MRR"), but only if they appear.
+- Where possible, note the target geography or market region if it can be reasonably inferred or is stated.
 - Only report current facts; do not extrapolate or add future projections.  
         `.trim(),
       },
