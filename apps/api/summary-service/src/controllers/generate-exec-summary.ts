@@ -6,6 +6,7 @@ import { unlink } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 import { Readable } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
+// @ts-ignore: TS1479
 import { GoogleGenAI } from '@google/genai';
 import config from '../config';
 
