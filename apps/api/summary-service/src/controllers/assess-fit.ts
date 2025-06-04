@@ -58,11 +58,11 @@ const generateStructuredFitAssessment = async (thesis: Thesis, multiHeadingSumma
                   • fitJustification: A concise paragraph (≤100 words) explaining the alignment or misalignment across the thesis dimensions.
                 
                 **Scoring Guide:**
-                - **Score 3 (Strong Fit):** Aligned on all thesis elements; no gaps.
+                - **Score 3 (Strong Fit):** Aligned on **ALL** thesis elements; no gaps.
                 - **Score 2 (Moderate Fit):** Some alignment, but with gaps or missing information.
                 - **Score 1 (Poor Fit):** Clear misalignment with the firm's thesis or missing key elements entirely.
                 
-                Only use evidence from the five-heading summary. Do NOT hallucinate or assume details not explicitly stated. If information is missing (e.g., no stage or unclear geography), acknowledge that in your justification.
+                Only use evidence from the five-heading summary. Do NOT hallucinate or assume details not explicitly stated. If information relevant to evaluating against the investment thesis cannot be directly inferred from the summary, acknowledge that in your justification.
                 `.trim()
             }
         ],

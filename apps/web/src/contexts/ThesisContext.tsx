@@ -9,19 +9,20 @@ interface Thesis {
 
 const defaultThesis: Thesis = {
   stage: 'Pre-Seed / Seed',
-  check: '$250K - $1.5M',
+  check: '$500K - $1.5M',
   verticals: [
-    'Data Infrastructure & Warehousing',
-    'Data Integration & Pipeline Orchestration',
-    'Data Observability & Quality',
-    'Data Analytics & Business Intelligence',
-    'AI/ML Platforms & Tooling',
+    "Core Data Infrastructure & Analytical Engines",
+    "Data Movement, Streaming & Pipeline Orchestration",
+    "Data Governance, Observability & Trust",
+    "ML / AI Development & Model Ops Platforms",
+    "Applied AI for Scientific, Industrial & Regulated Domains",
+    "Cloud-Native Dev-Ops & Serverless Infra",
   ],
   criteria: [
     "Falls squarely within the firm's target verticals",
-    'Deep technical founding team (research or dev pedigree)',
-    'Live prototype or early enterprise pilot in market',
-    'Primary go-to-market focus is the US',
+    "Deep technical founding team (research or dev pedigree)",
+    "Working prototype **or** early design-partner deployments showing enterprise pull",
+    "Focused on enterprise buyers, with grounding in North American markets through team, customer base, or go-to-market approach — even if globally extensible",
   ]
 };
 

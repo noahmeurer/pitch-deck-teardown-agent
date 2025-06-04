@@ -12,54 +12,6 @@ import config from '../config';
 
 const GEMINI_API_KEY = config.geminiApiKey;
 
-// const generateSummaryFromPDF = async (fileName: string) => {
-//     const ai = new GoogleGenAI({
-//         apiKey: GEMINI_API_KEY,
-//       });
-//       const config = {
-//         responseMimeType: 'text/plain',
-//         systemInstruction: [
-//             {
-//               text: `You are a senior VC analyst. When given a PDF pitch deck, you will generate an executive summary an investor needs. Produce a structured summary with these five headings: 
-//     1. Vertical & Target Customer
-//     2. Core Problem & Solution
-//     3. Business Model & Revenue Approach
-//     4. Traction & Validation
-//     5. Fundraising Ask
-//     Only report details that are found in the deck and are current as opposed to future projections. Do not hallucinate.`,
-//             }
-//         ],
-//       };
-//       const model = 'gemini-2.5-flash-preview-05-20';
-//       const contents = [
-//         {
-//           role: 'user',
-//           parts: [
-//             {
-//               inlineData: {
-//                   data: fs.readFileSync(fileName, 'base64'),
-//                   mimeType: `application/pdf`,
-//               },
-//             },
-//             {
-//               text: `Generate a structured summary of the pitch deck, following the five headings. Be detailed and specific. Include any important numbers or milestones found in the deck. (e.g., $100k MRR)`,
-//             },
-//           ],
-//         },
-//       ];
-    
-//       const response = await ai.models.generateContentStream({
-//         model,
-//         config,
-//         contents,
-//       });
-//       let summary = '';
-//       for await (const chunk of response) {
-//         summary += chunk.text;
-//       }
-//       return summary;
-// }
-
 const generateSummaryFromPDF = async (fileName: string) => {
   const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -84,8 +36,8 @@ You are a senior VC analyst. You will be provided a PDF that should represent a 
 - If a heading is only partially covered, summarize the available information and explicitly note any missing specifics. If a heading is completely missing, state: "The deck does not provide information on [heading]." 
 - Do **not** invent or hallucinate details to fill a heading.  
 - Be as detailed and specific as possible, including any numbers or milestones from the deck (e.g., "$100k MRR"), but only if they appear.
-- Where possible, note the target geography or market region if it can be reasonably inferred or is stated.
-- Only report current facts; do not extrapolate or add future projections.  
+- Where relevant, note any geographic signals such as the location of teams, customers, pilot partners, or target go-to-market regions if they can be reasonably inferred or are stated.
+- Only report current facts; do not extrapolate or add future projections.
         `.trim(),
       },
     ],
