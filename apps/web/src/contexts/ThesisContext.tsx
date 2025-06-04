@@ -9,7 +9,7 @@ interface Thesis {
 
 const defaultThesis: Thesis = {
   stage: 'Pre-Seed / Seed',
-  check: '$250K – $1.5M',
+  check: '$250K - $1.5M',
   verticals: [
     'Data Infrastructure & Warehousing',
     'Data Integration & Pipeline Orchestration',
