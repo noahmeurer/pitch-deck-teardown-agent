@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useDocumentContext } from '@/contexts/DocumentContext';
 import { config } from '@/config/env';
 import { ProcessingModal, ProcessingErrorModal } from './ProcessingModal';
+import { useThesis, Thesis } from '@/contexts/ThesisContext';
+
+// Define the structure for Fit Assessment Data
+interface FitAssessmentData {
+  fitScore: number;
+  fitJustification: string;
+}
+
+interface FitAssessmentResponse {
+  success: boolean;
+  data: FitAssessmentData[];
+}
 
 export function RightColumn() {
   const [isExecSummaryExpanded, setIsExecSummaryExpanded] = useState(false);
@@ -12,8 +24,15 @@ export function RightColumn() {
   const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
   const [isLoadingExecSummary, setIsLoadingExecSummary] = useState(false);
   const [execSummaryError, setExecSummaryError] = useState<string | null>(null);
+
+  // New state variables for Fit Assessment
+  const [isFitAssessmentExpanded, setIsFitAssessmentExpanded] = useState(false);
+  const [fitAssessmentData, setFitAssessmentData] = useState<FitAssessmentData | null>(null);
+  const [isLoadingFitAssessment, setIsLoadingFitAssessment] = useState(false);
+  const [fitAssessmentError, setFitAssessmentError] = useState<string | null>(null);
   
   const { documentStorage } = useDocumentContext();
+  const { thesis } = useThesis();
 
   // Parse and summarize the pitch deck when the document is uploaded
   useEffect(() => {
@@ -117,6 +136,56 @@ export function RightColumn() {
     generateExecSummary();
   }, [multiHeadingSummary, isParsingDocument]);
 
+  // useEffect for Fit Assessment
+  useEffect(() => {
+    const generateFitAssessment = async () => {
+      if (!multiHeadingSummary || !thesis || isParsingDocument) {
+        return;
+      }
+
+      if (fitAssessmentData || isLoadingFitAssessment) {
+        return;
+      }
+
+      setIsLoadingFitAssessment(true);
+      setFitAssessmentError(null);
+
+      try {
+        const response = await fetch(`${config.summaryServiceUrl}/fit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            thesis: thesis,
+            multiHeadingSummary: multiHeadingSummary,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Fit assessment generation failed with status: ${response.status}`);
+        }
+
+        const data = await response.json() as FitAssessmentResponse;
+
+        if (data.success && data.data.length > 0) {
+          setFitAssessmentData(data.data[0]); // Take the first assessment
+          setIsFitAssessmentExpanded(true); // Auto-expand when data is loaded
+        } else {
+          throw new Error('Fit assessment generation failed');
+        }
+      } catch (error) {
+        setFitAssessmentError(error instanceof Error ? error.message : 'Failed to generate fit assessment');
+        console.error('Fit assessment generation error:', error);
+      } finally {
+        setIsLoadingFitAssessment(false);
+      }
+    };
+
+    generateFitAssessment();
+  }, [multiHeadingSummary, thesis, isParsingDocument, fitAssessmentData, isLoadingFitAssessment]);
+
   const toggleMetric = (metricId: number) => {
     setExpandedMetrics(prev => 
       prev.includes(metricId) 
@@ -175,6 +244,91 @@ export function RightColumn() {
     );
   };
 
+  // Render function for Fit Assessment
+  const renderFitAssessmentContent = () => {
+    // Wait for executive summary if it's loading and fit assessment is ready
+    if (isLoadingExecSummary && fitAssessmentData) {
+        return (
+          <div className="border-t border-gray-200 p-4">
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              <p className="text-gray-600">Waiting for Executive Summary...</p>
+            </div>
+          </div>
+        );
+    }
+      
+    if (isLoadingFitAssessment && !fitAssessmentData) { // only show primary loader if no data yet
+      return (
+        <div className="border-t border-gray-200 p-4">
+          <div className="flex items-center space-x-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+            <p className="text-gray-600">Assessing proposition fit...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (fitAssessmentError) {
+      return (
+        <div className="border-t border-gray-200 p-4">
+          <div className="text-red-600">
+            <p className="font-medium">Error assessing fit:</p>
+            <p className="text-sm mt-1">{fitAssessmentError}</p>
+            <button
+              onClick={() => {
+                setFitAssessmentError(null);
+                setFitAssessmentData(null);
+                // This will trigger the useEffect to retry by clearing fitAssessmentData
+              }}
+              className="mt-2 px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (fitAssessmentData) {
+      return (
+        <div className="border-t border-gray-200 p-4">
+          <div className="prose prose-sm max-w-none">
+            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{fitAssessmentData.fitJustification}</p>
+          </div>
+        </div>
+      );
+    }
+    
+    // Only show this message if exec summary is loaded or not loading, and no multiHeadingSummary yet
+    if (!multiHeadingSummary && !isLoadingExecSummary) {
+        return (
+          <div className="border-t border-gray-200 p-4">
+            <p className="text-gray-500">Upload a pitch deck to generate proposition fit analysis</p>
+          </div>
+        );
+    }
+
+    return null; // Return null if no conditions are met or waiting for other data
+  };
+
+  // Helper to determine fit text and color for the header
+  const getFitStyling = () => {
+    if (!fitAssessmentData) {
+      return { text: "Proposition Fit", colorClass: "bg-white" };
+    }
+    switch (fitAssessmentData.fitScore) {
+      case 1:
+        return { text: "Proposition Fit: Poor", colorClass: "bg-red-100" }; // Light red
+      case 2:
+        return { text: "Proposition Fit: Moderate", colorClass: "bg-yellow-100" }; // Light yellow
+      case 3:
+        return { text: "Proposition Fit: Strong", colorClass: "bg-green-100" }; // Light green
+      default:
+        return { text: "Proposition Fit", colorClass: "bg-white" };
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
       <ProcessingModal isVisible={isParsingDocument} />
@@ -200,9 +354,22 @@ export function RightColumn() {
         </div>
 
         {/* Proposition Fit */}
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <h2 className="text-xl font-semibold">Proposition Fit</h2>
-          <p className="mt-2 text-gray-500">Proposition fit analysis will appear here</p>
+        <div className="rounded-lg border border-gray-200 bg-white">
+          <button
+            onClick={() => setIsFitAssessmentExpanded(!isFitAssessmentExpanded)}
+            className={`flex w-full items-center justify-between p-4 text-left ${getFitStyling().colorClass}`}
+          >
+            <div className="flex items-center space-x-2">
+              <h2 className="text-xl font-semibold">{getFitStyling().text}</h2>
+              {(isLoadingFitAssessment && !fitAssessmentData) && ( // Show spinner only if loading and no data yet
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              )}
+            </div>
+            <span className="text-gray-500">
+              {isFitAssessmentExpanded ? '-' : '+'}
+            </span>
+          </button>
+          {isFitAssessmentExpanded && renderFitAssessmentContent()}
         </div>
 
         {/* Hexagon Chart */}
